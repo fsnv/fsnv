@@ -4,179 +4,536 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portail des Services | FSNV</title>
-    <!-- Chargement de Tailwind CSS via CDN -->
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Ajout de FontAwesome pour des icônes professionnelles et stables -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts : Plus Jakarta Sans (titres) & Inter (corps) & JetBrains Mono (raccourcis) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6.5.1 (CDNJS - Icônes stables et vectorielles) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.68);
+            --glass-bg-hover: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.85);
+            --glass-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+            --glass-shadow-hover: 0 22px 45px -10px rgba(15, 23, 42, 0.11), 0 8px 20px -6px rgba(15, 23, 42, 0.06);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f4f7fb;
+            color: #0f172a;
+            overflow-x: hidden;
         }
-        /* Classe ajoutée dynamiquement par JS pour l'animation du raccourci clavier */
+
+        h1, h2, .font-display {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        kbd {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Arrière-plan lumineux avec halos organiques flottants */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(at 0% 0%, rgba(219, 234, 254, 0.85) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(224, 242, 254, 0.85) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(209, 250, 229, 0.7) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(243, 232, 255, 0.75) 0px, transparent 50%),
+                #f8fafc;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.55;
+            animation: floatBlob 18s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            width: 480px;
+            height: 480px;
+            background: linear-gradient(135deg, #bae6fd, #c7d2fe);
+            top: -120px;
+            left: -100px;
+        }
+
+        .blob-2 {
+            width: 420px;
+            height: 420px;
+            background: linear-gradient(135deg, #a7f3d0, #bfdbfe);
+            bottom: -100px;
+            right: -80px;
+            animation-delay: -6s;
+        }
+
+        .blob-3 {
+            width: 340px;
+            height: 340px;
+            background: linear-gradient(135deg, #fde68a, #fbcfe8);
+            top: 40%;
+            left: 55%;
+            opacity: 0.35;
+            animation-delay: -12s;
+        }
+
+        @keyframes floatBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(35px, -30px) scale(1.08); }
+        }
+
+        /* Grille de texture très subtile */
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(148, 163, 184, 0.22) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Carte Glassomorphisme Clair */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                        background-color 0.35s ease,
+                        box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                        border-color 0.35s ease;
+        }
+
+        .glass-card:hover {
+            background: var(--glass-bg-hover);
+            transform: translateY(-6px);
+            box-shadow: var(--glass-shadow-hover), inset 0 1px 0 0 rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 1);
+        }
+
+        /* Effet d'enfoncement au raccourci clavier */
         .active-keypress {
-            transform: scale(0.95) translateY(0) !important;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4) !important;
-            transition: all 0.15s ease-in-out !important;
+            transform: scale(0.96) translateY(0) !important;
+            background: rgba(255, 255, 255, 0.96) !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.35), var(--glass-shadow) !important;
+            transition: all 0.14s ease-out !important;
         }
-        /* Petite animation d'apparition initiale */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        /* Animation d'entrée en cascade */
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .animate-fade-in {
-            animation: fadeIn 0.6s ease-out forwards;
+
+        .reveal {
+            opacity: 0;
+            animation: slideUpFade 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        .delay-100 { animation-delay: 100ms; }
-        .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
-        .delay-400 { animation-delay: 400ms; }
-        .delay-500 { animation-delay: 500ms; }
+
+        .stagger-1 { animation-delay: 60ms; }
+        .stagger-2 { animation-delay: 120ms; }
+        .stagger-3 { animation-delay: 180ms; }
+        .stagger-4 { animation-delay: 240ms; }
+        .stagger-5 { animation-delay: 300ms; }
+        .stagger-6 { animation-delay: 360ms; }
+        .stagger-7 { animation-delay: 420ms; }
+        .stagger-8 { animation-delay: 480ms; }
+
+        /* Badge touche clavier 3D */
+        .kbd-key {
+            background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid rgba(203, 213, 225, 0.9);
+            box-shadow: 0 2px 0 rgba(148, 163, 184, 0.45), inset 0 1px 0 #ffffff;
+            transition: all 0.25s ease;
+        }
+
+        .glass-card:hover .kbd-key {
+            transform: translateY(-1px);
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-slate-200 min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-slate-800">
+<body class="min-h-screen flex flex-col justify-between py-8 px-4 sm:px-8 lg:px-12 selection:bg-blue-500 selection:text-white">
 
-    <div class="max-w-6xl w-full">
-        <!-- En-tête du Portail -->
-        <header class="text-center mb-12 animate-fade-in">
-            <!-- Logo de la faculté -->
-            <img src="https://i.postimg.cc/d11J4BDM/FSNV.png" alt="Logo FSNV" class="mx-auto h-28 md:h-32 object-contain mb-6 drop-shadow-lg transition-transform hover:scale-105 duration-300">
-            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">Portail des Services FSNV</h1>
-            <p class="text-lg text-slate-500 max-w-2xl mx-auto">Sélectionnez un service en cliquant sur sa tuile ou utilisez les raccourcis clavier dédiés pour une navigation rapide.</p>
-        </header>
-
-        <!-- Grille des Services -->
-        <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            
-            <!-- Tuile 1 : Gestion du pointage (P) -->
-            <a href="https://fsnv.github.io/pointage" id="card-p" class="card relative group bg-white p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 flex flex-col h-full overflow-hidden opacity-0 animate-fade-in delay-100">
-                <!-- Décoration de fond au survol -->
-                <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-500 rounded-full opacity-5 group-hover:scale-[2.5] transition-transform duration-700 ease-out z-0"></div>
-                
-                <div class="relative z-10 flex-grow">
-                    <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6 shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                        <i class="fa-solid fa-user-clock text-2xl"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">Gestion du pointage</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed">Suivi des horaires, des présences et des pointages du personnel.</p>
-                </div>
-                
-                <div class="relative z-10 mt-8 flex items-center justify-between border-t border-slate-100 pt-5">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Raccourci</span>
-                    <kbd class="bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-3 py-1.5 text-sm font-mono font-bold shadow-sm group-hover:border-blue-300 group-hover:bg-blue-50 transition-colors">P</kbd>
-                </div>
-            </a>
-
-            <!-- Tuile 2 : Absences des enseignants (A) -->
-            <a href="https://fsnv.github.io/absences" id="card-a" class="card relative group bg-white p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 flex flex-col h-full overflow-hidden opacity-0 animate-fade-in delay-200">
-                <div class="absolute -top-12 -right-12 w-32 h-32 bg-rose-500 rounded-full opacity-5 group-hover:scale-[2.5] transition-transform duration-700 ease-out z-0"></div>
-                
-                <div class="relative z-10 flex-grow">
-                    <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mb-6 shadow-inner group-hover:bg-rose-500 group-hover:text-white transition-colors duration-300">
-                        <i class="fa-solid fa-user-slash text-2xl"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-rose-600 transition-colors">Absences enseignants</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed">Déclaration et consultation des absences du corps enseignant.</p>
-                </div>
-                
-                <div class="relative z-10 mt-8 flex items-center justify-between border-t border-slate-100 pt-5">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Raccourci</span>
-                    <kbd class="bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-3 py-1.5 text-sm font-mono font-bold shadow-sm group-hover:border-rose-300 group-hover:bg-rose-50 transition-colors">A</kbd>
-                </div>
-            </a>
-
-            <!-- Tuile 3 : Synoptique des TP (S) -->
-            <a href="https://fsnv.github.io/synoptique" id="card-s" class="card relative group bg-white p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 flex flex-col h-full overflow-hidden opacity-0 animate-fade-in delay-300">
-                <div class="absolute -top-12 -right-12 w-32 h-32 bg-purple-500 rounded-full opacity-5 group-hover:scale-[2.5] transition-transform duration-700 ease-out z-0"></div>
-                
-                <div class="relative z-10 flex-grow">
-                    <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-6 shadow-inner group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
-                        <i class="fa-solid fa-flask text-2xl"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-purple-600 transition-colors">Synoptique des TP</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed">Vue d'ensemble et planification des Travaux Pratiques.</p>
-                </div>
-                
-                <div class="relative z-10 mt-8 flex items-center justify-between border-t border-slate-100 pt-5">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Raccourci</span>
-                    <kbd class="bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-3 py-1.5 text-sm font-mono font-bold shadow-sm group-hover:border-purple-300 group-hover:bg-purple-50 transition-colors">S</kbd>
-                </div>
-            </a>
-
-            <!-- Tuile 4 : Gestion de l'inventaire (M - Magasin) -->
-            <a href="https://fsnv.github.io/magasin" id="card-m" class="card relative group bg-white p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 flex flex-col h-full overflow-hidden opacity-0 animate-fade-in delay-400">
-                <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-500 rounded-full opacity-5 group-hover:scale-[2.5] transition-transform duration-700 ease-out z-0"></div>
-                
-                <div class="relative z-10 flex-grow">
-                    <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center mb-6 shadow-inner group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
-                        <i class="fa-solid fa-boxes-stacked text-2xl"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">Gestion de l'inventaire</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed">Administration du magasin, matériels et équipements.</p>
-                </div>
-                
-                <div class="relative z-10 mt-8 flex items-center justify-between border-t border-slate-100 pt-5">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Raccourci</span>
-                    <kbd class="bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-3 py-1.5 text-sm font-mono font-bold shadow-sm group-hover:border-amber-300 group-hover:bg-amber-50 transition-colors">M</kbd>
-                </div>
-            </a>
-
-            <!-- Tuile 5 : Gestion des produits de laboratoire (L) -->
-            <a href="https://fsnv.github.io/laboratoires" id="card-l" class="card relative group bg-white p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 flex flex-col h-full overflow-hidden opacity-0 animate-fade-in delay-500">
-                <div class="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500 rounded-full opacity-5 group-hover:scale-[2.5] transition-transform duration-700 ease-out z-0"></div>
-                
-                <div class="relative z-10 flex-grow">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center mb-6 shadow-inner group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-300">
-                        <i class="fa-solid fa-vials text-2xl"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-emerald-600 transition-colors">Produits de laboratoire</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed">Suivi des réactifs, consommables et produits chimiques.</p>
-                </div>
-                
-                <div class="relative z-10 mt-8 flex items-center justify-between border-t border-slate-100 pt-5">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Raccourci</span>
-                    <kbd class="bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-3 py-1.5 text-sm font-mono font-bold shadow-sm group-hover:border-emerald-300 group-hover:bg-emerald-50 transition-colors">L</kbd>
-                </div>
-            </a>
-            
-        </main>
+    <!-- Fond Glassomorphique Animé -->
+    <div class="ambient-bg bg-grid-pattern">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
-    <!-- Script de gestion des raccourcis clavier -->
+    <div class="max-w-7xl w-full mx-auto my-auto">
+        
+        <!-- En-tête Institutionnel -->
+        <header class="text-center mb-10 sm:mb-12 reveal">
+            <div class="inline-flex items-center justify-center p-3.5 mb-5 rounded-3xl bg-white/75 backdrop-blur-xl border border-white/90 shadow-lg shadow-slate-200/50 transition-transform duration-300 hover:scale-105">
+                <img src="https://i.postimg.cc/d11J4BDM/FSNV.png" alt="Logo FSNV" class="h-20 sm:h-24 w-auto object-contain">
+            </div>
+
+            <div class="flex justify-center mb-3">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-white/75 backdrop-blur-md border border-white text-slate-600 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Faculté des Sciences de la Nature et de la Vie
+                </span>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 mb-3">
+                Portail des Services <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-600 bg-clip-text text-transparent">FSNV</span>
+            </h1>
+            <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                Accédez directement aux plateformes administratives et pédagogiques en un clic ou via leur raccourci clavier.
+            </p>
+
+            <!-- Barre de recherche rapide intégrée -->
+            <div class="mt-6 max-w-md mx-auto relative">
+                <div class="relative flex items-center">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-sm pointer-events-none"></i>
+                    <input 
+                        type="text" 
+                        id="service-search" 
+                        placeholder="Filtrer un service (ex: Biblio, TP, Doléances...)" 
+                        aria-label="Filtrer les services"
+                        class="w-full pl-11 pr-14 py-2.5 rounded-2xl bg-white/75 backdrop-blur-xl border border-white/90 text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:bg-white transition-all"
+                    >
+                    <kbd class="kbd-key absolute right-3 px-2 py-0.5 text-[11px] font-bold text-slate-400 rounded-md pointer-events-none">/</kbd>
+                </div>
+            </div>
+        </header>
+
+        <!-- Grille des 8 Services (4 colonnes sur grand écran, 2 sur tablette, 1 sur mobile) -->
+        <main id="services-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+
+            <!-- 1. Gestion du pointage (P) -->
+            <a href="https://fsnv.github.io/pointage" id="card-p" data-keywords="pointage horaires presences personnel" class="service-card glass-card group relative rounded-3xl p-6 flex flex-col justify-between overflow-hidden reveal stagger-1">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-blue-500/10 blur-xl group-hover:scale-150 group-hover:bg-blue-500/20 transition-all duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-13 h-13 w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-user-clock text-lg"></i>
+                        </div>
+                        <span class="text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-1.5 group-hover:text-blue-700 transition-colors">
+                        Gestion du pointage
+                    </h2>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Suivi des horaires, des présences et des pointages du personnel.
+                    </p>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Touche rapide</span>
+                    <kbd class="kbd-key px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 group-hover:text-blue-600 group-hover:border-blue-300">P</kbd>
+                </div>
+            </a>
+
+            <!-- 2. Absences enseignants (A) -->
+            <a href="https://fsnv.github.io/absences" id="card-a" data-keywords="absences enseignants professeurs declaration" class="service-card glass-card group relative rounded-3xl p-6 flex flex-col justify-between overflow-hidden reveal stagger-2">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-rose-500/10 blur-xl group-hover:scale-150 group-hover:bg-rose-500/20 transition-all duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-lg shadow-rose-500/25 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-user-slash text-lg"></i>
+                        </div>
+                        <span class="text-slate-300 group-hover:text-rose-600 group-hover:translate-x-1 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-1.5 group-hover:text-rose-700 transition-colors">
+                        Absences enseignants
+                    </h2>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Déclaration et consultation des absences du corps enseignant.
+                    </p>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Touche rapide</span>
+                    <kbd class="kbd-key px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 group-hover:text-rose-600 group-hover:border-rose-300">A</kbd>
+                </div>
+            </a>
+
+            <!-- 3. Synoptique des TP (S) -->
+            <a href="https://fsnv.github.io/synoptique" id="card-s" data-keywords="synoptique tp travaux pratiques planning" class="service-card glass-card group relative rounded-3xl p-6 flex flex-col justify-between overflow-hidden reveal stagger-3">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-purple-500/10 blur-xl group-hover:scale-150 group-hover:bg-purple-500/20 transition-all duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-flask text-lg"></i>
+                        </div>
+                        <span class="text-slate-300 group-hover:text-purple-600 group-hover:translate-x-1 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-1.5 group-hover:text-purple-700 transition-colors">
+                        Synoptique des TP
+                    </h2>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Vue d'ensemble et planification des Travaux Pratiques.
+                    </p>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Touche rapide</span>
+                    <kbd class="kbd-key px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 group-hover:text-purple-600 group-hover:border-purple-300">S</kbd>
+                </div>
+            </a>
+
+            <!-- 4. Gestion de l'inventaire (M) -->
+            <a href="https://fsnv.github.io/magasin" id="card-m" data-keywords="inventaire magasin materiels equipements" class="service-card glass-card group relative rounded-3xl p-6 flex flex-col justify-between overflow-hidden reveal stagger-4">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-amber-500/10 blur-xl group-hover:scale-150 group-hover:bg-amber-500/20 transition-all duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/25 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-boxes-stacked text-lg"></i>
+                        </div>
+                        <span class="text-slate-300 group-hover:text-amber-600 group-hover:translate-x-1 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-1.5 group-hover:text-amber-700 transition-colors">
+                        Gestion de l'inventaire
+                    </h2>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Administration du magasin, matériels et équipements.
+                    </p>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Touche rapide</span>
+                    <kbd class="kbd-key px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 group-hover:text-amber-600 group-hover:border-amber-300">M</kbd>
+                </div>
+            </a>
+
+            <!-- 5. Produits de laboratoire (L) -->
+            <a href="https://fsnv.github.io/laboratoires" id="card-l" data-keywords="laboratoire reactifs consommables chimiques produits" class="service-card glass-card group relative rounded-3xl p-6 flex flex-col justify-between overflow-hidden reveal stagger-5">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-emerald-500/10 blur-xl group-hover:scale-150 group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-vials text-lg"></i>
+                        </div>
+                        <span class="text-slate-300 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-1.5 group-hover:text-emerald-700 transition-colors">
+                        Produits de laboratoire
+                    </h2>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Suivi des réactifs, consommables et produits chimiques.
+                    </p>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Touche rapide</span>
+                    <kbd class="kbd-key px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 group-hover:text-emerald-600 group-hover:border-emerald-300">L</kbd>
+                </div>
+            </a>
+
+            <!-- 6. Archive conseil de discipline (C) - NOUVEAU -->
+            <a href="https://fsnv.github.io/discipline" id="card-c" data-keywords="archive conseil discipline pv decisions dossiers" class="service-card glass-card group relative rounded-3xl p-6 flex flex-col justify-between overflow-hidden reveal stagger-6">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-slate-600/10 blur-xl group-hover:scale-150 group-hover:bg-slate-600/20 transition-all duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center shadow-lg shadow-slate-700/25 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-scale-balanced text-lg"></i>
+                        </div>
+                        <span class="text-slate-300 group-hover:text-slate-700 group-hover:translate-x-1 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-1.5 group-hover:text-slate-900 transition-colors">
+                        Archive conseil de discipline
+                    </h2>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Consultation sécurisée des PV, décisions et dossiers disciplinaires.
+                    </p>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Touche rapide</span>
+                    <kbd class="kbd-key px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 group-hover:text-slate-900 group-hover:border-slate-400">C</kbd>
+                </div>
+            </a>
+
+            <!-- 7. Biblio FSNV (B) - NOUVEAU -->
+            <a href="https://fsnv.github.io/biblio" id="card-b" data-keywords="biblio bibliotheque catalogue livres ouvrages" class="service-card glass-card group relative rounded-3xl p-6 flex flex-col justify-between overflow-hidden reveal stagger-7">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-cyan-500/10 blur-xl group-hover:scale-150 group-hover:bg-cyan-500/20 transition-all duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-sky-600 text-white flex items-center justify-center shadow-lg shadow-cyan-500/25 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-book-open text-lg"></i>
+                        </div>
+                        <span class="text-slate-300 group-hover:text-cyan-600 group-hover:translate-x-1 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <h2 class="text-lg font-bold text-slate-800 group-hover:text-cyan-700 transition-colors">
+                            Biblio FSNV
+                        </h2>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Catalogue des livres, ouvrages scientifiques et fonds documentaire.
+                    </p>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Touche rapide</span>
+                    <kbd class="kbd-key px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 group-hover:text-cyan-600 group-hover:border-cyan-300">B</kbd>
+                </div>
+            </a>
+
+            <!-- 8. Doléances (D) - NOUVEAU -->
+            <a href="https://fsnv.github.io/doleances" id="card-d" data-keywords="doleances reclamations suggestions ecoute" class="service-card glass-card group relative rounded-3xl p-6 flex flex-col justify-between overflow-hidden reveal stagger-8">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-orange-500/10 blur-xl group-hover:scale-150 group-hover:bg-orange-500/20 transition-all duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center shadow-lg shadow-orange-500/25 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-comment-dots text-lg"></i>
+                        </div>
+                        <span class="text-slate-300 group-hover:text-orange-600 group-hover:translate-x-1 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-1.5 group-hover:text-orange-700 transition-colors">
+                        Doléances
+                    </h2>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Espace de dépôt et suivi des requêtes, réclamations et suggestions.
+                    </p>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Touche rapide</span>
+                    <kbd class="kbd-key px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 group-hover:text-orange-600 group-hover:border-orange-300">D</kbd>
+                </div>
+            </a>
+
+        </main>
+
+        <!-- Message si aucun résultat de recherche -->
+        <div id="no-results" class="hidden text-center py-12">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/80 text-slate-400 mb-3 shadow-sm">
+                <i class="fa-solid fa-folder-open text-lg"></i>
+            </div>
+            <p class="text-slate-600 font-medium">Aucun service ne correspond à votre recherche.</p>
+        </div>
+
+    </div>
+
+    <!-- Pied de page discret -->
+    <footer class="mt-12 text-center text-xs text-slate-500 reveal stagger-8">
+        <p>© <span id="current-year"></span> Portail Numérique FSNV — Navigation rapide par clavier activée</p>
+    </footer>
+
+    <!-- Scripts : Raccourcis clavier & Filtre instantané -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Configuration des raccourcis
+            // Année dynamique
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Configuration des raccourcis clavier
             const shortcuts = {
                 'p': { id: 'card-p', url: 'https://fsnv.github.io/pointage' },
                 'a': { id: 'card-a', url: 'https://fsnv.github.io/absences' },
                 's': { id: 'card-s', url: 'https://fsnv.github.io/synoptique' },
                 'm': { id: 'card-m', url: 'https://fsnv.github.io/magasin' },
-                'l': { id: 'card-l', url: 'https://fsnv.github.io/laboratoires' }
+                'l': { id: 'card-l', url: 'https://fsnv.github.io/laboratoires' },
+                'c': { id: 'card-c', url: 'https://fsnv.github.io/discipline' },
+                'b': { id: 'card-b', url: 'https://fsnv.github.io/biblio' },
+                'd': { id: 'card-d', url: 'https://fsnv.github.io/doleances' }
             };
 
-            // Écouteur d'évènement global sur le clavier
+            const searchInput = document.getElementById('service-search');
+            const cards = document.querySelectorAll('.service-card');
+            const noResults = document.getElementById('no-results');
+
+            // Filtrage en temps réel
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const text = (card.textContent + ' ' + (card.dataset.keywords || ''))
+                        .toLowerCase()
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "");
+
+                    if (text.includes(query)) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                noResults.classList.toggle('hidden', visibleCount > 0);
+            });
+
+            // Gestion globale du clavier
             document.addEventListener('keydown', (e) => {
-                // Éviter de déclencher les raccourcis si l'utilisateur tape dans un champ de texte (bien qu'il n'y en ait pas ici, c'est une bonne pratique)
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                // Touche '/' pour activer la recherche
+                if (e.key === '/' && document.activeElement !== searchInput) {
+                    e.preventDefault();
+                    searchInput.focus();
+                    return;
+                }
+
+                // Touche 'Escape' pour vider et quitter la recherche
+                if (e.key === 'Escape' && document.activeElement === searchInput) {
+                    searchInput.value = '';
+                    searchInput.dispatchEvent(new Event('input'));
+                    searchInput.blur();
+                    return;
+                }
+
+                // Ignorer les raccourcis si un champ texte est actif ou si Ctrl/Alt/Meta est pressé
+                if (
+                    e.target.tagName === 'INPUT' || 
+                    e.target.tagName === 'TEXTAREA' || 
+                    e.ctrlKey || e.metaKey || e.altKey
+                ) {
+                    return;
+                }
 
                 const key = e.key.toLowerCase();
                 const targetService = shortcuts[key];
 
                 if (targetService) {
                     const cardElement = document.getElementById(targetService.id);
-                    
-                    if (cardElement) {
-                        e.preventDefault(); // Empêcher le comportement par défaut (ex: scroll)
-                        
-                        // 1. Ajouter la classe d'animation pour le feedback visuel (effet d'enfoncement)
+                    if (cardElement && cardElement.style.display !== 'none') {
+                        e.preventDefault();
                         cardElement.classList.add('active-keypress');
                         
-                        // 2. Attendre la fin de la petite animation, puis rediriger
                         setTimeout(() => {
-                            // On retire la classe pour que la carte reprenne son état si on fait "précédent" dans le navigateur
-                            cardElement.classList.remove('active-keypress'); 
+                            cardElement.classList.remove('active-keypress');
                             window.location.href = targetService.url;
-                        }, 200); // 200ms de délai pour laisser le temps à l'oeil de voir l'animation
+                        }, 180);
                     }
                 }
             });
